@@ -108,36 +108,11 @@
             margin-top: 10px;
         }
 
-        .saved-list {
-            text-align: left;
-            margin-top: 12px;
-            max-height: 160px;
-            overflow-y: auto;
-        }
-
-        .saved-item {
-            background: #fff5f8;
-            border: 1px solid #ffd7e1;
-            border-radius: 10px;
-            padding: 8px 10px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #666;
-        }
-
         .secondary-btn {
             background-color: #ff4d6d;
             color: white;
             width: 100%;
             margin-top: 10px;
-        }
-
-        .small-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #d63384;
-            text-decoration: none;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -188,9 +163,7 @@
     <div id="successPage" class="card hidden">
         <img src="https://media.tenor.com/gUiu1zywCcgAAAAi/sweet-love.gif" alt="Happy Bear" style="width:150px;">
         <h1>It's a Date! 🎉</h1>
-        <p style="font-size: 18px; color: #ff4d6d;">Your details have been saved to the shared server and can be viewed by opening the responses page. 😉</p>
-        <a class="small-link" href="/responses.html" target="_blank">Open responses page</a>
-        <div id="savedResponses" class="saved-list"></div>
+        <p style="font-size: 18px; color: #ff4d6d;">Can't wait to see you there! 💕</p>
     </div>
 
     <script>
@@ -206,8 +179,6 @@
         let quoteIndex = 0;
         const noBtn = document.getElementById('noBtn');
         const questionText = document.getElementById('questionText');
-        const savedResponsesContainer = document.getElementById('savedResponses');
-        let savedResponses = [];
 
         // Function that runs away and changes the text when "No" is hovered/clicked
         function moveNoButton() {
@@ -231,28 +202,6 @@
             document.getElementById('formPage').classList.remove('hidden');
         }
 
-        function renderSavedResponses() {
-            if (!savedResponsesContainer) return;
-
-            if (savedResponses.length === 0) {
-                savedResponsesContainer.innerHTML = '<div class="saved-item">No saved responses yet.</div>';
-                return;
-            }
-
-            savedResponsesContainer.innerHTML = savedResponses.map((entry, index) => {
-                return `
-                    <div class="saved-item">
-                        <strong>#${savedResponses.length - index}</strong><br>
-                        📅 ${entry.date}<br>
-                        ⏰ ${entry.time}<br>
-                        📍 ${entry.place}<br>
-                        🍕 ${entry.food}<br>
-                        🕒 ${entry.savedAt}
-                    </div>
-                `;
-            }).join('');
-        }
-
         async function saveResponse(details) {
             const response = await fetch('/api/responses', {
                 method: 'POST',
@@ -260,24 +209,12 @@
                 body: JSON.stringify(details)
             });
 
-            if (response.ok) {
-                const latest = await response.json();
-                if (latest.success) {
-                    savedResponses.unshift({ ...details, savedAt: new Date().toLocaleString() });
-                    renderSavedResponses();
-                }
+            if (!response.ok) {
+                throw new Error('Unable to save your response.');
             }
         }
 
-        async function loadResponses() {
-            const response = await fetch('/api/responses');
-            if (response.ok) {
-                savedResponses = await response.json();
-                renderSavedResponses();
-            }
-        }
-
-        function sendDetails() {
+        async function sendDetails() {
             const date = document.getElementById('date').value;
             const time = document.getElementById('time').value;
             const place = document.getElementById('place').value;
@@ -288,13 +225,14 @@
                 return;
             }
 
-            saveResponse({ date, time, place, food });
-
-            document.getElementById('formPage').classList.add('hidden');
-            document.getElementById('successPage').classList.remove('hidden');
+            try {
+                await saveResponse({ date, time, place, food });
+                document.getElementById('formPage').classList.add('hidden');
+                document.getElementById('successPage').classList.remove('hidden');
+            } catch (error) {
+                alert(error.message);
+            }
         }
-
-        loadResponses();
     </script>
 </body>
 </html>

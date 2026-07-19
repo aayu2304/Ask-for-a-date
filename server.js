@@ -25,10 +25,6 @@ function saveResponses(responses) {
   fs.writeFileSync(dataFile, JSON.stringify(responses, null, 2));
 }
 
-app.get('/api/responses', (req, res) => {
-  res.json(loadResponses());
-});
-
 app.post('/api/responses', (req, res) => {
   const { date, time, place, food } = req.body;
 
