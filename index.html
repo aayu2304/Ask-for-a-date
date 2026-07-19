@@ -74,46 +74,6 @@
             display: none !important;
         }
 
-        /* Form styling */
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            color: #ff4d6d;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        input, text-area {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ffccd5;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #ff4d6d;
-        }
-
-        #submitBtn {
-            background-color: #28a745;
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .secondary-btn {
-            background-color: #ff4d6d;
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -126,44 +86,16 @@
         </div>
         <h1 id="questionText">Will you go out on a date with me? 🌹</h1>
         <div class="btn-container">
-            <button id="yesBtn" onclick="nextPhase()">Yes! 🥰</button>
+            <button id="yesBtn" onclick="showFinalMessage()">Yes! 🥰</button>
             <button id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No 🥺</button>
         </div>
     </div>
 
-    <!-- Phase 2: The Details Form -->
-    <div id="formPage" class="card hidden">
-        <h1>Yay! You said YES! 💖</h1>
-        <p style="color: #666;">Let's make it official. Fill this out for me:</p>
-        
-        <div class="form-group">
-            <label for="date">Pick a Date:</label>
-            <input type="date" id="date" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="time">Pick a Time:</label>
-            <input type="time" id="time" required>
-        </div>
-
-        <div class="form-group">
-            <label for="place">Where should we go?</label>
-            <input type="text" id="place" placeholder="e.g., That cute cafe, the beach..." required>
-        </div>
-
-        <div class="form-group">
-            <label for="food">What's your favorite food?</label>
-            <input type="text" id="food" placeholder="e.g., Sushi, Pizza, Tacos..." required>
-        </div>
-
-        <button id="submitBtn" onclick="sendDetails()">Submit & Lock It In! 🔒</button>
-    </div>
-
-    <!-- Phase 3: Success Screen -->
+    <!-- Final Confirmation -->
     <div id="successPage" class="card hidden">
         <img src="https://media.tenor.com/gUiu1zywCcgAAAAi/sweet-love.gif" alt="Happy Bear" style="width:150px;">
-        <h1>It's a Date! 🎉</h1>
-        <p style="font-size: 18px; color: #ff4d6d;">Can't wait to see you there! 💕</p>
+        <h1>You made the best decision. 💖</h1>
+        <p style="font-size: 18px; color: #ff4d6d;">I knew u would choose YES 🌹</p>
     </div>
 
     <script>
@@ -197,41 +129,9 @@
             noBtn.style.top = y + 'px';
         }
 
-        function nextPhase() {
+        function showFinalMessage() {
             document.getElementById('questionPage').classList.add('hidden');
-            document.getElementById('formPage').classList.remove('hidden');
-        }
-
-        async function saveResponse(details) {
-            const response = await fetch('/api/responses', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(details)
-            });
-
-            if (!response.ok) {
-                throw new Error('Unable to save your response.');
-            }
-        }
-
-        async function sendDetails() {
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const place = document.getElementById('place').value;
-            const food = document.getElementById('food').value;
-
-            if(!date || !time || !place || !food) {
-                alert("Please fill out all the fields, cutie! 😘");
-                return;
-            }
-
-            try {
-                await saveResponse({ date, time, place, food });
-                document.getElementById('formPage').classList.add('hidden');
-                document.getElementById('successPage').classList.remove('hidden');
-            } catch (error) {
-                alert(error.message);
-            }
+            document.getElementById('successPage').classList.remove('hidden');
         }
     </script>
 </body>
