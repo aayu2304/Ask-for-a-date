@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Date Responses</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffe6ea;
+            margin: 0;
+            padding: 24px;
+            color: #333;
+        }
+        .card {
+            background: white;
+            max-width: 700px;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.2);
+        }
+        h1 { color: #d63384; }
+        .item { border: 1px solid #ffd7e1; border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fff5f8; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Saved Date Responses</h1>
+        <div id="responses"></div>
+    </div>
+
+    <script>
+        async function loadResponses() {
+            const res = await fetch('/api/responses');
+            const data = await res.json();
+            const container = document.getElementById('responses');
+
+            if (!data.length) {
+                container.innerHTML = '<p>No responses yet.</p>';
+                return;
+            }
+
+            container.innerHTML = data.map((item, index) => `
+                <div class="item">
+                    <strong>#${data.length - index}</strong><br>
+                    📅 ${item.date}<br>
+                    ⏰ ${item.time}<br>
+                    📍 ${item.place}<br>
+                    🍕 ${item.food}<br>
+                    🕒 ${item.savedAt}
+                </div>
+            `).join('');
+        }
+
+        loadResponses();
+    </script>
+</body>
+</html>
