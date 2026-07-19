@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Cutie 💕</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffe6ea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.2);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .gif-container img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            position: relative;
+            height: 50px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+        }
+
+        #noBtn {
+            background-color: #6c757d;
+            color: white;
+            position: absolute;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: #ff4d6d;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, text-area {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ffccd5;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff4d6d;
+        }
+
+        #submitBtn {
+            background-color: #28a745;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Phase 1: The Question -->
+    <div id="questionPage" class="card">
+        <div class="gif-container">
+            <!-- Cute Milk & Mocha bear gif -->
+            <img src="https://media.tenor.com/XFn7n7Egfd0AAAAi/mocha-bear.gif" alt="Cute Bear">
+        </div>
+        <h1 id="questionText">Will you go out on a date with me? 🌹</h1>
+        <div class="btn-container">
+            <button id="yesBtn" onclick="nextPhase()">Yes! 🥰</button>
+            <button id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No 🥺</button>
+        </div>
+    </div>
+
+    <!-- Phase 2: The Details Form -->
+    <div id="formPage" class="card hidden">
+        <h1>Yay! You said YES! 💖</h1>
+        <p style="color: #666;">Let's make it official. Fill this out for me:</p>
+        
+        <div class="form-group">
+            <label for="date">Pick a Date:</label>
+            <input type="date" id="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="time">Pick a Time:</label>
+            <input type="time" id="time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="place">Where should we go?</label>
+            <input type="text" id="place" placeholder="e.g., That cute cafe, the beach..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="food">What's your favorite food?</label>
+            <input type="text" id="food" placeholder="e.g., Sushi, Pizza, Tacos..." required>
+        </div>
+
+        <button id="submitBtn" onclick="sendDetails()">Submit & Lock It In! 🔒</button>
+    </div>
+
+    <!-- Phase 3: Success Screen -->
+    <div id="successPage" class="card hidden">
+        <img src="https://media.tenor.com/gUiu1zywCcgAAAAi/sweet-love.gif" alt="Happy Bear" style="width:150px;">
+        <h1>It's a Date! 🎉</h1>
+        <p style="font-size: 18px; color: #ff4d6d;">Can't wait to see you! Check your messages, the details have been sent to me! 😉</p>
+    </div>
+
+    <script>
+        const noQuotes = [
+            "Are you sure, cutie? 🥺",
+            "Think again... 💖",
+            "Pretty please? 🌹",
+            "Surely that was a misclick! 🤔",
+            "You're breaking my heart! 💔",
+            "Don't do this to me! 😭"
+        ];
+        
+        let quoteIndex = 0;
+        const noBtn = document.getElementById('noBtn');
+        const questionText = document.getElementById('questionText');
+
+        // Function that runs away and changes the text when "No" is hovered/clicked
+        function moveNoButton() {
+            // Change text
+            questionText.innerText = noQuotes[quoteIndex];
+            quoteIndex = (quoteIndex + 1) % noQuotes.length;
+
+            // Move button randomly within the screen bounds
+            const padding = 50;
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+            
+            // Fix position to absolute relative to viewport so it escapes the card
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        function nextPhase() {
+            document.getElementById('questionPage').classList.add('hidden');
+            document.getElementById('formPage').classList.remove('hidden');
+        }
+
+        function sendDetails() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const place = document.getElementById('place').value;
+            const food = document.getElementById('food').value;
+
+            if(!date || !time || !place || !food) {
+                alert("Please fill out all the fields, cutie! 😘");
+                return;
+            }
+
+            // Construct the WhatsApp message text
+            const message = `Hey! I filled out the date details! 🥰%0A%0A📅 Date: ${date}%0A⏰ Time: ${time}%0A📍 Place: ${place}%0A🍕 Fav Food: ${food}`;
+            
+            // Open WhatsApp to send the data to you (Replace 1234567890 with YOUR phone number including country code, no + sign)
+            // Example: https://wa.me/15551234567
+            const yourPhoneNumber = "1234567890"; 
+            
+            document.getElementById('formPage').classList.add('hidden');
+            document.getElementById('successPage').classList.remove('hidden');
+
+            // Opens WhatsApp after 1.5 seconds so they see the success screen
+            setTimeout(() => {
+                window.open(`https://wa.me/${yourPhoneNumber}?text=${message}`, '_blank');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
